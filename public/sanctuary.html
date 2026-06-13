@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <meta
+      name="description"
+      content="A private, ephemeral sanctuary. Nothing here is saved — it exists only in this moment."
+    />
+    <title>The Sanctuary — While They're Here</title>
+
+    <!-- Single fallback font: Hanken Grotesk, until a licensed "FOT-Seurat Pro B" is supplied. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              cream: "#F6F1E8",
+              sage: "#A8B5A2",
+              clay: "#C49A84",
+              walnut: "#6B584C",
+              mist: "#D8D4CE",
+              charcoal: "#2D2D2D",
+            },
+            fontFamily: {
+              sans: ['"FOT-Seurat Pro B"', '"Hanken Grotesk"', "system-ui", "sans-serif"],
+            },
+            transitionTimingFunction: {
+              organic: "cubic-bezier(0.22, 0.61, 0.36, 1)",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      /*
+       * "FOT-Seurat Pro B" is a licensed commercial typeface (Fontworks) and is
+       * not distributed with this file. Host the licensed woff2/woff at
+       * /fonts/FOT-SeuratPro-B.* to activate it; until then this falls back to
+       * Hanken Grotesk, then the system sans-serif stack.
+       */
+      @font-face {
+        font-family: "FOT-Seurat Pro B";
+        src:
+          url("/fonts/FOT-SeuratPro-B.woff2") format("woff2"),
+          url("/fonts/FOT-SeuratPro-B.woff") format("woff");
+        font-weight: 300 700;
+        font-style: normal;
+        font-display: swap;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* Long, slow fades for the cinematic gallery — too slow to express well as Tailwind utilities. */
+      .scene {
+        opacity: 0;
+        transition: opacity 3.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+      }
+      .scene.is-visible {
+        opacity: 1;
+      }
+
+      /* Slow ambient drift for the gallery illustrations. */
+      @keyframes drift {
+        0%,
+        100% {
+          transform: translateY(0) scale(1);
+        }
+        50% {
+          transform: translateY(-10px) scale(1.015);
+        }
+      }
+      .drift {
+        animation: drift 18s ease-in-out infinite;
+      }
+
+      /* Soft breathing glow for the streetlamp scene. */
+      @keyframes glow {
+        0%,
+        100% {
+          opacity: 0.55;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+      .glow {
+        animation: glow 6s ease-in-out infinite;
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen bg-cream font-sans text-charcoal antialiased">
+    <!-- ============================================================ -->
+    <!-- STEP 1 — The Sensory Trigger                                  -->
+    <!-- ============================================================ -->
+    <section
+      id="screen-intro"
+      class="flex min-h-screen flex-col items-center justify-center px-6 text-center transition-opacity duration-[1800ms] ease-organic"
+    >
+      <p class="mb-6 text-xs uppercase tracking-[0.32em] text-clay">While They're Here</p>
+      <h1 class="mb-6 max-w-[22ch] text-3xl leading-snug sm:text-4xl md:text-[2.6rem]">
+        Close your eyes.<br />Think of them.
+      </h1>
+      <p class="mx-auto mb-12 max-w-[52ch] text-base font-light leading-relaxed text-charcoal/80">
+        Someone you carry with you, but haven't found the words for yet. Take a slow breath. When
+        you're ready, this space will play a quiet, ambient tone — designed to ease your mind into
+        remembering the warm, ordinary moments you've shared with them.
+      </p>
+
+      <div class="mb-10 flex items-center gap-3">
+        <button
+          type="button"
+          id="sound-toggle"
+          role="switch"
+          aria-checked="false"
+          aria-label="Play ambient sound"
+          class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-walnut focus-visible:outline-offset-4 relative inline-flex h-6 w-12 flex-none items-center rounded-full bg-mist transition-colors duration-500 ease-organic"
+        >
+          <span
+            id="sound-toggle-knob"
+            class="inline-block h-[18px] w-[18px] translate-x-[3px] transform rounded-full bg-cream shadow-sm transition-transform duration-500 ease-organic"
+          ></span>
+        </button>
+        <span class="text-xs uppercase tracking-[0.16em] text-charcoal/70">Ambient tone</span>
+      </div>
+
+      <button
+        type="button"
+        id="begin-btn"
+        class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-walnut focus-visible:outline-offset-4 inline-flex items-center gap-3 rounded-sm border border-walnut bg-walnut px-8 py-4 font-sans text-sm uppercase tracking-[0.1em] text-cream transition-all duration-500 ease-organic hover:-translate-y-0.5 hover:bg-walnut/90"
+      >
+        Begin
+      </button>
+
+      <p class="mt-12 max-w-[40ch] text-xs italic text-charcoal/50">
+        Nothing on this page is saved, recorded, or sent anywhere. When you close this tab, it is as
+        if it never happened — except for what you carry afterward.
+      </p>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- STEP 2 + 3 — The Vision Canvas & The Sanctuary                -->
+    <!-- ============================================================ -->
+    <section
+      id="screen-experience"
+      class="hidden min-h-screen flex-col items-center px-6 py-16 opacity-0 transition-opacity duration-[2200ms] ease-organic sm:py-24"
+    >
+      <!-- Fixed ambient sound control, available throughout. -->
+      <div class="fixed right-5 top-5 z-20 flex items-center gap-2.5 rounded-full border border-mist bg-cream/80 px-4 py-2 backdrop-blur-sm">
+        <button
+          type="button"
+          id="sound-toggle-2"
+          role="switch"
+          aria-checked="false"
+          aria-label="Play ambient sound"
+          class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-walnut focus-visible:outline-offset-4 relative inline-flex h-5 w-10 flex-none items-center rounded-full bg-mist transition-colors duration-500 ease-organic"
+        >
+          <span
+            id="sound-toggle-knob-2"
+            class="inline-block h-[14px] w-[14px] translate-x-[3px] transform rounded-full bg-cream shadow-sm transition-transform duration-500 ease-organic"
+          ></span>
+        </button>
+        <span class="text-[0.65rem] uppercase tracking-[0.16em] text-charcoal/60">Sound</span>
+      </div>
+
+      <!-- The Vision Canvas -->
+      <div class="mx-auto w-full max-w-[60ch] text-center">
+        <p class="mb-3 text-xs uppercase tracking-[0.3em] text-clay">A quiet gallery</p>
+        <p class="mx-auto mb-12 max-w-[46ch] text-sm font-light leading-relaxed text-charcoal/70">
+          Let these drift by. They aren't meant to mean anything specific — just let your mind wander
+          toward your own version of each one.
+        </p>
+
+        <div class="relative mx-auto h-[280px] w-full max-w-[440px] overflow-hidden rounded-sm border border-mist bg-mist/30 sm:h-[320px]">
+          <!-- Scene 1: Two mugs on a sunlit table -->
+          <figure class="scene is-visible absolute inset-0 flex flex-col items-center justify-center gap-6" data-scene="1">
+            <div class="drift flex items-end gap-8">
+              <div class="relative h-16 w-16 rounded-b-full rounded-t-sm border-4 border-walnut/70 bg-clay/40">
+                <span class="absolute -right-2.5 top-3 h-6 w-4 rounded-r-full border-4 border-walnut/70"></span>
+              </div>
+              <div class="relative h-20 w-20 rounded-b-full rounded-t-sm border-4 border-walnut/50 bg-sage/30">
+                <span class="absolute -right-3 top-4 h-7 w-5 rounded-r-full border-4 border-walnut/50"></span>
+              </div>
+            </div>
+            <figcaption class="text-xs italic text-charcoal/60">Two mugs, still warm, on a sunlit table.</figcaption>
+          </figure>
+
+          <!-- Scene 2: A view from a train window -->
+          <figure class="scene absolute inset-0 flex flex-col items-center justify-center gap-6" data-scene="2">
+            <div class="drift relative h-32 w-44 overflow-hidden rounded-sm border-4 border-walnut/60 bg-gradient-to-b from-sage/30 via-clay/20 to-mist/40">
+              <span class="absolute inset-x-0 top-1/2 h-px bg-walnut/30"></span>
+              <span class="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-walnut/30"></span>
+            </div>
+            <figcaption class="text-xs italic text-charcoal/60">The view from a train window, half-remembered.</figcaption>
+          </figure>
+
+          <!-- Scene 3: A park bench -->
+          <figure class="scene absolute inset-0 flex flex-col items-center justify-center gap-6" data-scene="3">
+            <div class="drift relative flex h-24 w-48 items-end justify-center">
+              <span class="absolute left-1/2 top-0 h-16 w-px -translate-x-10 -rotate-12 bg-sage/60"></span>
+              <span class="absolute left-1/2 top-0 h-20 w-px translate-x-6 rotate-[10deg] bg-sage/50"></span>
+              <span class="absolute left-1/2 top-2 h-14 w-px -translate-x-2 rotate-6 bg-sage/40"></span>
+              <div class="relative h-8 w-40 rounded-sm border-4 border-walnut/60 bg-clay/20">
+                <span class="absolute -bottom-4 left-3 h-4 w-1.5 bg-walnut/60"></span>
+                <span class="absolute -bottom-4 right-3 h-4 w-1.5 bg-walnut/60"></span>
+              </div>
+            </div>
+            <figcaption class="text-xs italic text-charcoal/60">A park bench you used to sit on, just to talk.</figcaption>
+          </figure>
+
+          <!-- Scene 4: Holding hands -->
+          <figure class="scene absolute inset-0 flex flex-col items-center justify-center gap-6" data-scene="4">
+            <div class="drift flex items-center justify-center">
+              <span class="h-20 w-16 -rotate-6 rounded-[40%] bg-clay/40"></span>
+              <span class="-ml-6 h-20 w-16 rotate-6 rounded-[40%] bg-sage/40"></span>
+            </div>
+            <figcaption class="text-xs italic text-charcoal/60">A hand held a little longer than it needed to be.</figcaption>
+          </figure>
+
+          <!-- Scene 5: A streetlamp -->
+          <figure class="scene absolute inset-0 flex flex-col items-center justify-center gap-6" data-scene="5">
+            <div class="drift relative flex h-32 flex-col items-center">
+              <span class="glow h-6 w-6 rounded-full bg-clay/70"></span>
+              <span class="h-24 w-1 bg-walnut/50"></span>
+              <span class="h-1 w-10 bg-walnut/50"></span>
+            </div>
+            <figcaption class="text-xs italic text-charcoal/60">The streetlamp on the corner you always passed.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <!-- The Sanctuary -->
+      <div class="mx-auto mt-20 w-full max-w-[60ch]">
+        <p class="mb-3 text-center text-xs uppercase tracking-[0.3em] text-clay">The Sanctuary</p>
+        <h2 class="mb-4 text-center text-2xl leading-snug sm:text-3xl">A place to speak freely.</h2>
+        <p class="mx-auto mb-8 max-w-[50ch] text-center text-base font-light leading-relaxed text-charcoal/80">
+          Say what you need to say to them here. No one is saving this. It is just between you and the
+          thought of them.
+        </p>
+
+        <div id="sanctuary-form">
+          <label for="sanctuary-text" class="sr-only">Your words to them</label>
+          <textarea
+            id="sanctuary-text"
+            rows="10"
+            placeholder="Dear…"
+            class="w-full resize-y rounded-sm border border-mist bg-cream/60 p-6 font-sans text-base leading-relaxed text-charcoal placeholder:text-charcoal/40 transition-all duration-[1200ms] ease-organic focus-visible:outline focus-visible:outline-2 focus-visible:outline-walnut focus-visible:outline-offset-4"
+          ></textarea>
+
+          <div class="mt-6 flex flex-col items-center gap-4">
+            <button
+              type="button"
+              id="release-btn"
+              class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-walnut focus-visible:outline-offset-4 inline-flex items-center gap-3 rounded-sm border border-walnut bg-walnut px-8 py-4 font-sans text-sm uppercase tracking-[0.1em] text-cream transition-all duration-500 ease-organic hover:-translate-y-0.5 hover:bg-walnut/90"
+            >
+              Let it go
+            </button>
+            <p class="max-w-[40ch] text-center text-xs italic text-charcoal/50">
+              This won't save, send, or copy your words anywhere. When you let go, they simply fade.
+            </p>
+          </div>
+        </div>
+
+        <!-- Closing message, shown after "Let it go". -->
+        <div
+          id="closing-message"
+          class="hidden flex-col items-center px-2 text-center opacity-0 transition-opacity duration-[2500ms] ease-organic"
+        >
+          <p class="mb-6 text-xs uppercase tracking-[0.3em] text-clay">It's released.</p>
+          <p class="mx-auto mb-6 max-w-[48ch] text-xl font-light leading-relaxed sm:text-2xl">
+            What you just wrote was never the hard part. You already know how to say it.
+          </p>
+          <p class="mx-auto mb-12 max-w-[50ch] text-base font-light leading-relaxed text-charcoal/80">
+            The only thing left is to say it to them — out loud, imperfectly, while they're still here
+            to hear it. Not today, necessarily. But soon. You have the words. Go find a moment for them.
+          </p>
+          <a
+            href="/"
+            class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-walnut focus-visible:outline-offset-4 inline-flex items-center gap-3 rounded-sm border border-walnut px-8 py-4 font-sans text-sm uppercase tracking-[0.1em] text-walnut transition-all duration-500 ease-organic hover:-translate-y-0.5 hover:bg-walnut/10"
+          >
+            Return to stillness
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      (function () {
+        "use strict";
+
+        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        // ------------------------------------------------------------
+        // Ambient soundscape — synthesised, no audio files.
+        // A slow, two-oscillator drone with a gentle detune ("binaural"
+        // beating) and a soft fade in/out. Created lazily on first toggle,
+        // since AudioContext requires a user gesture.
+        // ------------------------------------------------------------
+        let audioCtx = null;
+        let gainNode = null;
+        let oscillators = [];
+        let soundOn = false;
+
+        function startAmbient() {
+          if (audioCtx) return;
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContextClass) return;
+
+          audioCtx = new AudioContextClass();
+          gainNode = audioCtx.createGain();
+          gainNode.gain.value = 0;
+          gainNode.connect(audioCtx.destination);
+
+          // Two close, slightly detuned tones create a slow "beating" drone;
+          // a third octave-up tone adds gentle air without being bright.
+          const voices = [
+            { freq: 110, pan: -0.35, type: "sine" },
+            { freq: 110.6, pan: 0.35, type: "sine" },
+            { freq: 220, pan: 0, type: "triangle" },
+          ];
+
+          oscillators = voices.map((voice) => {
+            const osc = audioCtx.createOscillator();
+            osc.type = voice.type;
+            osc.frequency.value = voice.freq;
+
+            const panner = audioCtx.createStereoPanner();
+            panner.pan.value = voice.pan;
+
+            const voiceGain = audioCtx.createGain();
+            voiceGain.gain.value = voice.freq === 220 ? 0.25 : 0.6;
+
+            osc.connect(voiceGain).connect(panner).connect(gainNode);
+            osc.start();
+            return osc;
+          });
+
+          gainNode.gain.linearRampToValueAtTime(0.05, audioCtx.currentTime + 4);
+        }
+
+        function stopAmbient() {
+          if (!audioCtx || !gainNode) return;
+          const ctx = audioCtx;
+          const gain = gainNode;
+          const oscs = oscillators;
+
+          gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 2);
+          window.setTimeout(() => {
+            oscs.forEach((osc) => {
+              try {
+                osc.stop();
+              } catch {
+                /* already stopped */
+              }
+            });
+            ctx.close();
+          }, 2100);
+
+          audioCtx = null;
+          gainNode = null;
+          oscillators = [];
+        }
+
+        function setToggleVisual(button, knob, on, onOffsetClass) {
+          button.setAttribute("aria-checked", on ? "true" : "false");
+          button.classList.toggle("bg-sage", on);
+          button.classList.toggle("bg-mist", !on);
+          knob.classList.toggle("translate-x-[3px]", !on);
+          knob.classList.toggle(onOffsetClass, on);
+        }
+
+        function toggleSound() {
+          soundOn = !soundOn;
+          if (soundOn) {
+            startAmbient();
+          } else {
+            stopAmbient();
+          }
+          setToggleVisual(soundToggle1, soundKnob1, soundOn, "translate-x-[27px]");
+          setToggleVisual(soundToggle2, soundKnob2, soundOn, "translate-x-[23px]");
+        }
+
+        const soundToggle1 = document.getElementById("sound-toggle");
+        const soundKnob1 = document.getElementById("sound-toggle-knob");
+        const soundToggle2 = document.getElementById("sound-toggle-2");
+        const soundKnob2 = document.getElementById("sound-toggle-knob-2");
+
+        soundToggle1.addEventListener("click", toggleSound);
+        soundToggle2.addEventListener("click", toggleSound);
+
+        // ------------------------------------------------------------
+        // Step transition: intro -> vision canvas + sanctuary
+        // ------------------------------------------------------------
+        const introScreen = document.getElementById("screen-intro");
+        const experienceScreen = document.getElementById("screen-experience");
+        const beginBtn = document.getElementById("begin-btn");
+
+        beginBtn.addEventListener("click", () => {
+          introScreen.classList.add("opacity-0");
+          window.setTimeout(
+            () => {
+              introScreen.classList.add("hidden");
+              experienceScreen.classList.remove("hidden");
+              experienceScreen.classList.add("flex");
+              // Trigger the fade-in on the next frame so the transition runs.
+              requestAnimationFrame(() => {
+                experienceScreen.classList.remove("opacity-0");
+              });
+              startSceneCycle();
+            },
+            prefersReducedMotion ? 0 : 1800,
+          );
+        });
+
+        // ------------------------------------------------------------
+        // Vision Canvas: slow cross-fade between poetic scenes.
+        // ------------------------------------------------------------
+        const scenes = Array.from(document.querySelectorAll(".scene"));
+        let sceneIndex = 0;
+        let sceneTimer = null;
+
+        function showNextScene() {
+          const current = scenes[sceneIndex];
+          const nextIndex = (sceneIndex + 1) % scenes.length;
+          const next = scenes[nextIndex];
+
+          current.classList.remove("is-visible");
+          next.classList.add("is-visible");
+          sceneIndex = nextIndex;
+        }
+
+        function startSceneCycle() {
+          if (prefersReducedMotion || sceneTimer) return;
+          sceneTimer = window.setInterval(showNextScene, 7000);
+        }
+
+        // ------------------------------------------------------------
+        // The Sanctuary: "Let it go" — fade the text away, never store it.
+        // ------------------------------------------------------------
+        const sanctuaryForm = document.getElementById("sanctuary-form");
+        const sanctuaryText = document.getElementById("sanctuary-text");
+        const releaseBtn = document.getElementById("release-btn");
+        const closingMessage = document.getElementById("closing-message");
+
+        releaseBtn.addEventListener("click", () => {
+          sanctuaryText.classList.add("opacity-0", "scale-[0.98]");
+
+          window.setTimeout(
+            () => {
+              // Discard the text completely — nothing is stored or sent.
+              sanctuaryText.value = "";
+              sanctuaryForm.classList.add("hidden");
+
+              closingMessage.classList.remove("hidden");
+              closingMessage.classList.add("flex");
+              requestAnimationFrame(() => {
+                closingMessage.classList.remove("opacity-0");
+              });
+            },
+            prefersReducedMotion ? 0 : 1200,
+          );
+        });
+      })();
+    </script>
+  </body>
+</html>
