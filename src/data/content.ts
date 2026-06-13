@@ -1,114 +1,74 @@
-import type {
-  ChecklistItem,
-  Pillar,
-  ReflectionPrompt,
-  SensoryAnchor,
-  WeeklyBeat,
-} from "../types";
+import type { HowToItem, ReminderCopy, TabId, TimeOfDay } from "../types";
 
-/** Content pillars (SOP §1). */
-export const PILLARS: ReadonlyArray<{
-  readonly num: string;
-  readonly name: Pillar;
-  readonly body: string;
-}> = [
+/** The three top-level tabs, in display order. */
+export const TABS: ReadonlyArray<{ readonly id: TabId; readonly label: string }> = [
+  { id: "reminder", label: "The Reminder" },
+  { id: "idea", label: "The Idea" },
+  { id: "letter", label: "The Open Letter" },
+];
+
+/** Copy for "The Reminder", split by time of day. */
+export const REMINDER_COPY: Readonly<Record<TimeOfDay, ReminderCopy>> = {
+  day: {
+    eyebrow: "Morning · Present tense",
+    title: "Don't take today for granted.",
+    body: "We don't save our best words, our deepest attention, or our archival efforts for a funeral. We deploy them now — in real time — while the people we love are still here to hear them. Today is ordinary. That's exactly why it matters.",
+    inputLabel: "Name one person you'll pay attention to today.",
+    inputPlaceholder: "Their name, and what you'll notice…",
+    actionLabel: "Set today's intention",
+  },
+  night: {
+    eyebrow: "Evening · Before sleep",
+    title: "Pause. Appreciate yourself.",
+    body: "Before you close your eyes, give yourself one minute. You showed up today — that's enough. Now name one small, ordinary thing from today you're grateful for: a sound, a face, a moment you almost let pass by.",
+    inputLabel: "What are you grateful for tonight?",
+    inputPlaceholder: "One small, ordinary thing…",
+    actionLabel: "Log tonight's gratitude",
+  },
+};
+
+/** The central reframe for "The Idea" tab. */
+export const IDEA_HEADLINE =
+  "Today may not be as good — but seeking discomfort changes perspective. The brain can be taught.";
+
+export const IDEA_INTRO =
+  "Memory doesn't work the way we think it does. Smell bypasses logic entirely and lands straight in the emotional centers of the brain. The exact pitch of a laugh fades faster than a face. The drag of familiar footsteps down a hall holds more weight than any photograph. None of that gets captured by default — it has to be sought out, on purpose, especially on the days it feels easiest to look away.";
+
+/** Practical, accordion-style "how-to's" derived from the workbook's protocols. */
+export const HOW_TOS: ReadonlyArray<HowToItem> = [
   {
-    num: "01",
-    name: "Life Appreciation",
-    body: "Active, present-tense gratitude. Moving the conversation from retrospective grief to proactive documentation, and immediate, actionable engagement.",
+    id: "ambient",
+    title: "Record the room, not the moment",
+    body: "Place your phone face down in the middle of an active, ordinary scene — the dinner table, the kitchen, the car. Don't prompt anyone. Let the clinking, the half-sentences, and the silences record themselves.",
   },
   {
-    num: "02",
-    name: "Simple Things",
-    body: "Sensory mapping. Hyper-focusing on the minute details — structural sounds, ambient backgrounds, physical micro-habits, and uncurated environmental textures.",
+    id: "anti-aesthetic",
+    title: "Resist the urge to polish",
+    body: "No ring lights, no filters, no staged angles. A wobbly, handheld, slightly-too-long clip of someone making coffee will mean more in ten years than a perfectly composed photo means today.",
   },
   {
-    num: "03",
-    name: "Raw Stories",
-    body: "Radical authenticity. Zero over-production. Archival aesthetics over pristine ones — no sterile lighting, no heavily staged scenes.",
+    id: "senses",
+    title: "Chase the senses you'll lose first",
+    body: "Smell can't be recorded — so capture the environment around it instead. Voice fades faster than a face — so keep the verbal tics, not just the words. Habits and routines hold more emotional currency than any pose.",
+  },
+  {
+    id: "weekly-rhythm",
+    title: "Give yourself a weekly rhythm",
+    body: "Monday: capture something raw and unedited. Wednesday: notice why a small detail moves you. Friday: do one small, actionable thing with someone you love — something simple enough to finish in five minutes.",
+  },
+  {
+    id: "discomfort",
+    title: "Do the uncomfortable thing on purpose",
+    body: "Call instead of texting. Sit in silence for two full minutes without reaching for your phone. Bring up the unresolved thing first, and don't defend yourself. Ask for the hard story, and don't let the first 'no' end it.",
   },
 ];
 
-/** The three sensory anchors of the "Core Dichotomy of Human Sensory Loss" (SOP §2). */
-export const SENSORY_ANCHORS: ReadonlyArray<SensoryAnchor> = [
-  {
-    id: "olfactory",
-    label: "The Olfactory Anchor",
-    kicker: "Smell · un-digitizable",
-    title: "The Olfactory Anchor — Smell",
-    body: "The strongest emotional trigger, yet entirely un-digitizable. You cannot record it, so preserve the environment around it: the kitchen on a Sunday, the coat that still holds their day. Capture the room before it disappears.",
-    position: { leftPct: 22, topPct: 40 },
-  },
-  {
-    id: "voice",
-    label: "The Vanishing Voice",
-    kicker: "Sound · fades fastest",
-    title: "The Vanishing Voice — Sound",
-    body: "The exact pitch of a laugh, a verbal tic, the cadence of speech — these fade far faster than a face. Protocol Alpha: lay the phone face-down in the middle of the table and let the chatter, the clinking, the unprompted pauses record themselves.",
-    position: { leftPct: 52, topPct: 62 },
-  },
-  {
-    id: "texture",
-    label: "The Mundane Texture",
-    kicker: "Habit · emotional currency",
-    title: "The Mundane Texture — Habit",
-    body: "The heavy drag of footsteps, the specific ritual of making morning coffee. Micro-habits hold more emotional currency than any curated pose. Film the movement, not the portrait.",
-    position: { leftPct: 80, topPct: 38 },
-  },
-];
+/** Subject line used when composing the "Email to Me" open letter. */
+export const OPEN_LETTER_SUBJECT = "An Open Letter — While They're Here";
 
-/** The Standard Weekly Production Engine (SOP §3). */
-export const WEEKLY_BEATS: ReadonlyArray<WeeklyBeat> = [
-  {
-    id: "spark",
-    day: "Monday",
-    vehicle: "The Spark",
-    pillar: "Raw Stories",
-    concept:
-      "Deliver an unedited, deeply human, relatable artifact — an old voice note, a handwritten recipe, a closeup of something already worn by use.",
-    directive:
-      "Minimal editing. No smooth filters or graphic intros. Let the native sound design pull the weight.",
-  },
-  {
-    id: "science",
-    day: "Wednesday",
-    vehicle: "The Science",
-    pillar: "Simple Things",
-    concept:
-      "Deconstruct the cognitive science behind why we miss specific elements — like the olfactory highway that routes smell straight to memory.",
-    directive:
-      "Direct-to-camera delivery or deep text carousels. The hook must challenge a normal assumption.",
-  },
-  {
-    id: "ritual",
-    day: "Friday",
-    vehicle: "The Ritual",
-    pillar: "Life Appreciation",
-    concept:
-      "Provide a specific, actionable weekend assignment to execute with loved ones — simple enough for anyone to do in five minutes.",
-    directive:
-      "Urgent, encouraging, clear call-to-action. High visual focus on actual execution.",
-  },
-];
+/** Static framing copy that wraps the user's own words in the emailed letter. */
+export const OPEN_LETTER_INTRO =
+  "A few words I wrote to myself, while they were still here to matter:";
 
-/** Archive Assignment prompts for the roulette (SOP §3–4 field directives). */
-export const REFLECTION_PROMPTS: ReadonlyArray<ReflectionPrompt> = [
-  { id: "r01", pillar: "Life Appreciation", text: "Look at your partner's or parent's hands doing something they always do today. Capture the movement — not the pose." },
-  { id: "r02", pillar: "Simple Things", text: "Place your phone face-down on the dinner table tonight. Record five minutes of nothing in particular: the clinking, the half-sentences, the silence." },
-  { id: "r03", pillar: "Raw Stories", text: "Ask the oldest person you love about a smell from their childhood home. Don't film their face — film them remembering." },
-  { id: "r04", pillar: "Life Appreciation", text: "Record a 60-second voice memo of someone making coffee. Keep the background chaos. Send it to no one — just keep it." },
-  { id: "r05", pillar: "Simple Things", text: "Capture the exact sound of your front door opening when they come home. You'll forget it faster than you think." },
-  { id: "r06", pillar: "Raw Stories", text: "Find a recipe written in their handwriting. Film your finger following the lines as you read it aloud." },
-  { id: "r07", pillar: "Life Appreciation", text: "Catch the specific way they say your name. One take, unprompted, in the middle of an ordinary sentence." },
-  { id: "r08", pillar: "Simple Things", text: "Film the worn spot — the chair, the mug, the stair they always take two at a time. Let the object tell the story." },
-  { id: "r09", pillar: "Raw Stories", text: "Sit beside them, not across. Ask about a 'lost' memory no one talks about anymore. Let the pauses stay in." },
-  { id: "r10", pillar: "Life Appreciation", text: "Record the drag of their footsteps down the hall. Tomorrow it's just a sound; in a decade it's the whole house." },
-];
-
-/** Reusable Production Execution Checklist (SOP §5). */
-export const CHECKLIST: ReadonlyArray<ChecklistItem> = [
-  { id: "pillar", label: "Pillar Verification", description: "Does this explicitly hit Life Appreciation, Simple Things, or Raw Stories?" },
-  { id: "sensory", label: "Sensory Check", description: "Does it highlight a real sensory anchor — sound, smell, touch, a habit — not a general concept?" },
-  { id: "overload", label: "Production Overload", description: "Is the editing stripped back enough to feel like found footage, not an ad?" },
-  { id: "actionability", label: "Actionability Metric", description: "Could an average person execute this in 5 minutes this weekend?" },
-];
+export const OPEN_LETTER_OUTRO =
+  "— Written and sent to myself, on While They're Here.";

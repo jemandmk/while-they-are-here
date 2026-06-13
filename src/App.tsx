@@ -1,31 +1,42 @@
-import { NavBar } from "./components/layout/NavBar";
-import { Footer } from "./components/layout/Footer";
-import { Hero } from "./components/sections/Hero";
-import { Pillars } from "./components/sections/Pillars";
-import { SoundscapeSection } from "./components/sections/SoundscapeSection";
-import { WeeklyLoop } from "./components/sections/WeeklyLoop";
-import { ArchiveSection } from "./components/sections/ArchiveSection";
-import { DailyReminderForm } from "./components/DailyReminderForm";
+import { useState } from "react";
+import { TabNav } from "./components/TabNav";
+import { ReminderTab } from "./components/tabs/ReminderTab";
+import { IdeaTab } from "./components/tabs/IdeaTab";
+import { OpenLetterTab } from "./components/tabs/OpenLetterTab";
+import type { TabId } from "./types";
 
 /**
- * Root composition. Each section is an isolated, self-contained module so the
- * page stays a thin, declarative shell — no business logic lives here.
+ * Root composition. A single, distraction-free surface with exactly three
+ * tabs — Reminder, Idea, Open Letter — and nothing else.
  */
 export function App(): JSX.Element {
+  const [active, setActive] = useState<TabId>("reminder");
+
   return (
-    <>
-      <NavBar />
-      <main id="top">
-        <Hero />
-        <hr className="border-0 border-t border-hairline" />
-        <Pillars />
-        <SoundscapeSection />
-        <WeeklyLoop />
-        <ArchiveSection />
-        <hr className="border-0 border-t border-hairline" />
-        <DailyReminderForm />
+    <div className="min-h-screen">
+      <header className="px-6 pt-10 text-center">
+        <p className="text-xs uppercase tracking-[0.32em] text-walnut">While They&rsquo;re Here</p>
+      </header>
+
+      <nav className="mt-8 px-6">
+        <TabNav active={active} onChange={setActive} />
+      </nav>
+
+      <main>
+        <section role="tabpanel" id="panel-reminder" aria-labelledby="tab-reminder" hidden={active !== "reminder"}>
+          <ReminderTab />
+        </section>
+        <section role="tabpanel" id="panel-idea" aria-labelledby="tab-idea" hidden={active !== "idea"}>
+          <IdeaTab />
+        </section>
+        <section role="tabpanel" id="panel-letter" aria-labelledby="tab-letter" hidden={active !== "letter"}>
+          <OpenLetterTab />
+        </section>
       </main>
-      <Footer />
-    </>
+
+      <footer className="px-6 py-10 text-center text-xs text-charcoal/50">
+        Capturing the ordinary before it becomes extraordinary.
+      </footer>
+    </div>
   );
 }

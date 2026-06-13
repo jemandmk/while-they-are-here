@@ -1,67 +1,41 @@
 /**
  * Domain types for "While They're Here".
  *
- * These are the single source of truth for every interactive data state in the
- * app. `any` is never permitted; prefer string-literal unions and `readonly`
- * structures so content data cannot be mutated at runtime.
+ * These are the single source of truth for every interactive data state in
+ * the app. `any` is never permitted; prefer string-literal unions and
+ * `readonly` structures so content data cannot be mutated at runtime.
  */
 
-/** The three foundational content pillars from the SOP. */
-export type Pillar = "Life Appreciation" | "Simple Things" | "Raw Stories";
+/** The three top-level tabs of the hyper-minimalist interface. */
+export type TabId = "reminder" | "idea" | "letter";
 
-/** The three sensory anchors of the "Core Dichotomy of Human Sensory Loss". */
-export type SensoryAnchorId = "olfactory" | "voice" | "texture";
+/** Which variant of "The Reminder" is showing. */
+export type TimeOfDay = "day" | "night";
 
-export interface SensoryAnchor {
-  readonly id: SensoryAnchorId;
-  /** Human-facing node label, e.g. "The Olfactory Anchor". */
-  readonly label: string;
-  /** Short kicker beneath the label, e.g. "Smell · un-digitizable". */
-  readonly kicker: string;
-  /** Title shown in the readout when active. */
+/** Static copy for one time-of-day state of "The Reminder". */
+export interface ReminderCopy {
+  readonly eyebrow: string;
   readonly title: string;
-  /** Body copy drawn from the brand manual. */
   readonly body: string;
-  /** Absolute position of the floating node on the desktop stage (%). */
-  readonly position: { readonly leftPct: number; readonly topPct: number };
+  /** Prompt shown above the input for that time of day. */
+  readonly inputLabel: string;
+  readonly inputPlaceholder: string;
+  /** Label for the action button beneath the input. */
+  readonly actionLabel: string;
 }
 
-/** A single "Archive Assignment" reflection for the roulette. */
-export interface ReflectionPrompt {
+/** A single saved entry in the gratitude / intention log. */
+export interface LogEntry {
   readonly id: string;
-  readonly pillar: Pillar;
+  /** ISO 8601 timestamp. */
+  readonly date: string;
+  readonly timeOfDay: TimeOfDay;
   readonly text: string;
 }
 
-/**
- * A high-friction "Seek Discomfort" assignment. Extends ReflectionPrompt so it
- * stays compatible with `usePromptRoulette`, and adds the explicit line of
- * internal resistance the user is being asked to lean into.
- */
-export interface DiscomfortPrompt extends ReflectionPrompt {
-  /** The honest, named resistance — what makes this one hard to start. */
-  readonly friction: string;
-}
-
-/** Which prompt pool the roulette is currently drawing from. */
-export type RouletteMode = "standard" | "discomfort";
-
-/** One row of the Reusable Production Execution Checklist (SOP §5). */
-export interface ChecklistItem {
+/** One collapsible "how-to" item in The Idea tab. */
+export interface HowToItem {
   readonly id: string;
-  readonly label: string;
-  readonly description: string;
+  readonly title: string;
+  readonly body: string;
 }
-
-/** A single beat of the Standard Weekly Production Engine. */
-export interface WeeklyBeat {
-  readonly id: "spark" | "science" | "ritual";
-  readonly day: "Monday" | "Wednesday" | "Friday";
-  readonly vehicle: string;
-  readonly pillar: Pillar;
-  readonly concept: string;
-  readonly directive: string;
-}
-
-/** Playback state for the sensory audio engine. */
-export type AudioStatus = "idle" | "playing";

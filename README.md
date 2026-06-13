@@ -2,9 +2,11 @@
 
 > _"Capturing the ordinary before it becomes extraordinary."_
 
-A warm, minimalist single-page web application for the present-tense
-appreciation of the people we love. Built as a production-grade React + TypeScript
-+ Tailwind frontend, CI/CD-ready for automated deployment to GitHub Pages.
+A hyper-minimalist, distraction-free single-page web application built around
+three tabs: a daily grounding reminder, a perspective-shift on neuroplasticity,
+and a private open letter to yourself. Built as a production-grade React +
+TypeScript + Tailwind frontend, CI/CD-ready for automated deployment to GitHub
+Pages.
 
 ---
 
@@ -15,7 +17,7 @@ appreciation of the people we love. Built as a production-grade React + TypeScri
 | Framework      | React 18 + TypeScript (strict)          |
 | Build tool     | Vite 5                                  |
 | Styling        | Tailwind CSS 3 (semantic design tokens) |
-| Audio          | Web Audio API (synthesised, no assets)  |
+| Persistence    | `localStorage` only (no backend)        |
 | Lint           | ESLint (type-checked, `no-explicit-any`)|
 | CI/CD          | GitHub Actions → GitHub Pages           |
 
@@ -23,9 +25,9 @@ appreciation of the people we love. Built as a production-grade React + TypeScri
 
 ## Architecture
 
-The codebase enforces a strict **separation of concerns**: business logic lives
-in hooks and a framework-agnostic audio engine; components are presentational;
-content data and types are isolated and `readonly`.
+The codebase enforces a strict **separation of concerns**: state lives in
+hooks, components are presentational, and content data and types are isolated
+and `readonly`.
 
 ```
 while-theyre-here/
@@ -35,64 +37,57 @@ while-theyre-here/
 ├── public/                     # (static passthrough assets, if any)
 ├── src/
 │   ├── main.tsx                # React entry point
-│   ├── App.tsx                 # Thin composition shell (no logic)
-│   ├── index.css               # Tailwind layers + base/anti-aesthetic styles
+│   ├── App.tsx                 # Thin composition shell — tab state only
+│   ├── index.css               # Tailwind layers + font-face + base styles
 │   │
 │   ├── types/
 │   │   └── index.ts            # Single source of truth for all data shapes
 │   │
 │   ├── data/
-│   │   └── content.ts          # Brand-manual content (pillars, prompts, …)
-│   │
-│   ├── lib/
-│   │   └── audioEngine.ts      # SensoryAudioEngine — pure Web Audio, no React
+│   │   └── content.ts          # Workbook-derived copy for all three tabs
 │   │
 │   ├── hooks/
-│   │   ├── useReveal.ts         # Scroll-reveal via IntersectionObserver
-│   │   ├── useSensoryAudio.ts   # React adapter over SensoryAudioEngine
-│   │   └── usePromptRoulette.ts # Non-repeating draw + swap state
+│   │   └── useLocalStorage.ts  # `useState` backed by localStorage
 │   │
 │   └── components/
-│       ├── layout/
-│       │   ├── NavBar.tsx
-│       │   └── Footer.tsx
-│       ├── sections/
-│       │   ├── Hero.tsx
-│       │   ├── Pillars.tsx
-│       │   ├── SoundscapeSection.tsx
-│       │   ├── WeeklyLoop.tsx        # Accessible ARIA tablist
-│       │   ├── ArchiveSection.tsx
-│       │   └── CheckInSection.tsx
-│       ├── ui/
-│       │   ├── Button.tsx
-│       │   ├── Reveal.tsx
-│       │   ├── SectionHeading.tsx
-│       │   └── icons.tsx
-│       ├── SensoryDashboard.tsx     # Feature A (core)
-│       ├── PromptRoulette.tsx       # Feature B (core)
-│       ├── CaptureChecklist.tsx     # Feature B (checklist)
-│       ├── DailyReminderForm.tsx    # Feature C (core)
-│       └── NudgePhonePreview.tsx    # Feature C (preview mockup)
+│       ├── TabNav.tsx          # ARIA tablist, arrow-key navigation
+│       ├── tabs/
+│       │   ├── ReminderTab.tsx   # Tab 1 — morning/evening reminder + log
+│       │   ├── IdeaTab.tsx       # Tab 2 — neuroplasticity + how-to accordion
+│       │   └── OpenLetterTab.tsx # Tab 3 — reflection + "Email to me"
+│       └── ui/
+│           ├── Button.tsx
+│           └── Accordion.tsx
 ├── .env.example
 ├── .eslintrc.cjs
 ├── .gitignore
 ├── index.html
 ├── package.json
 ├── postcss.config.js
-├── tailwind.config.ts          # Brand design tokens
+├── tailwind.config.ts          # Brand design tokens (cream/sage/clay/walnut/mist/charcoal)
 ├── tsconfig*.json              # Strict TS, no `any`
 └── vite.config.ts
 ```
 
-### The three core feature components
+### The three tabs
 
-- **`SensoryDashboard`** — Feature A. The Proustian "VIP Neurological Highway":
-  keyboard-navigable floating nodes that trigger live-synthesised ambient audio
-  and reveal the manual's sensory-loss copy.
-- **`PromptRoulette`** — Feature B. "Draw a Reflection" with non-repeating field
-  directives, plus the interactive `CaptureChecklist` (SOP §5).
-- **`DailyReminderForm`** — Feature C. The "Human Check-In" subscription with a
-  finite-state union for submission and a live phone-notification preview.
+- **The Reminder** — auto-detects morning vs. evening (with a manual override)
+  and shows either a present-tense grounding prompt or an end-of-day gratitude
+  prompt. Entries are saved locally via `useLocalStorage`.
+- **The Idea** — the neuroplasticity reframe ("seek discomfort to change
+  perspective") plus an accessible accordion of practical how-to's drawn from
+  the workbook's capture protocols.
+- **The Open Letter** — a distraction-free textarea (auto-saved locally) with
+  an "Email to me" action that opens the user's mail client with the letter
+  pre-filled, addressed by them to themselves.
+
+### Typography
+
+The app uses a single typeface, **FOT-Seurat Pro B**, declared via `@font-face`
+in `src/index.css`. This is a licensed commercial font and is **not** bundled —
+drop `FOT-SeuratPro-B.woff2`/`.woff` into `public/fonts/` to activate it.
+Without those files, the app falls back to Inter, then the system sans-serif
+stack.
 
 ### Accessibility
 
