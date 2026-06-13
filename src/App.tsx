@@ -35,7 +35,13 @@ export function App(): JSX.Element {
       </main>
 
       <footer className="px-6 py-10 text-center text-xs text-charcoal/50">
-        Capturing the ordinary before it becomes extraordinary.
+        <p>Capturing the ordinary before it becomes extraordinary.</p>
+        <a
+          href={`${import.meta.env.BASE_URL}sanctuary.html`}
+          className="focus-organic mt-3 inline-block text-charcoal/60 underline decoration-mist underline-offset-4 transition-colors duration-med hover:text-walnut"
+        >
+          Need a quiet moment? Visit the Sanctuary.
+        </a>
       </footer>
     </div>
   );
