@@ -6,7 +6,8 @@
  * "FOT-Seurat Pro B" is a licensed commercial typeface (Fontworks) and is not
  * distributed with this codebase. Drop the licensed woff2/woff files into
  * `public/fonts/` with these filenames to activate it; until then every
- * `font-sans` usage falls back to Inter, then the system sans-serif stack.
+ * `font-sans` usage falls back to Hanken Grotesk (loaded in index.html), then
+ * the system sans-serif stack.
  */
 @font-face {
   font-family: "FOT-Seurat Pro B";

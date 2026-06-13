@@ -86,8 +86,8 @@ while-theyre-here/
 The app uses a single typeface, **FOT-Seurat Pro B**, declared via `@font-face`
 in `src/index.css`. This is a licensed commercial font and is **not** bundled —
 drop `FOT-SeuratPro-B.woff2`/`.woff` into `public/fonts/` to activate it.
-Without those files, the app falls back to Inter, then the system sans-serif
-stack.
+Without those files, the app falls back to **Hanken Grotesk** (loaded from
+Google Fonts in `index.html`), then the system sans-serif stack.
 
 ### Accessibility
 

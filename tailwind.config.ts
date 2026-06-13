@@ -18,8 +18,10 @@ const config: Config = {
         charcoal: "#2D2D2D",
       },
       fontFamily: {
-        // Single brand font, with a clean sans-serif fallback chain.
-        sans: ['"FOT-Seurat Pro B"', '"Inter"', "system-ui", "sans-serif"],
+        // Single brand font. "FOT-Seurat Pro B" is a licensed commercial font
+        // (see src/index.css); "Hanken Grotesk" is the free, warm, humanist
+        // grotesque used as the default until that license is supplied.
+        sans: ['"FOT-Seurat Pro B"', '"Hanken Grotesk"', "system-ui", "sans-serif"],
       },
       transitionTimingFunction: {
         organic: "cubic-bezier(0.22, 0.61, 0.36, 1)",
