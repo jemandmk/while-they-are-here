@@ -109,6 +109,60 @@
       .glow {
         animation: glow 6s ease-in-out infinite;
       }
+
+      /* ------------------------------------------------------------ */
+      /* The Release — a slow, unmistakable paper-plane fold.          */
+      /* Each stage is held for a beat so the gesture is legible, then */
+      /* the folded note lifts and carries itself away.                */
+      /* ------------------------------------------------------------ */
+      .paper-wrap {
+        perspective: 1400px;
+      }
+      .paper {
+        transform-origin: center center;
+        transition:
+          transform 1100ms cubic-bezier(0.22, 0.61, 0.36, 1),
+          clip-path 1100ms cubic-bezier(0.22, 0.61, 0.36, 1),
+          color 700ms ease-organic,
+          box-shadow 1100ms ease-organic,
+          border-radius 1100ms ease-organic;
+        will-change: transform, clip-path;
+      }
+      .paper.fold-mute-text {
+        color: transparent;
+      }
+      .paper.fold-1 {
+        transform: scaleX(0.5);
+        transform-origin: right center;
+        border-radius: 0.125rem;
+        box-shadow: inset -10px 0 18px -10px rgba(45, 45, 45, 0.35);
+      }
+      .paper.fold-2 {
+        transform: scaleX(0.5) scaleY(0.55);
+        transform-origin: bottom right;
+        border-radius: 0.125rem;
+        box-shadow:
+          inset -10px 0 18px -10px rgba(45, 45, 45, 0.35),
+          inset 0 -10px 18px -10px rgba(45, 45, 45, 0.35);
+      }
+      .paper.fold-3 {
+        transform: scaleX(0.5) scaleY(0.55) rotate(0.0001deg);
+        transform-origin: bottom right;
+        clip-path: polygon(0% 100%, 100% 100%, 100% 35%, 50% 0%, 0% 35%);
+        border-radius: 0;
+        box-shadow:
+          inset -10px 0 18px -10px rgba(45, 45, 45, 0.35),
+          inset 0 -10px 18px -10px rgba(45, 45, 45, 0.35);
+      }
+      .paper.fold-fly {
+        transform: translate3d(38vw, -46vh, 0) scale(0.32) rotate(28deg);
+        clip-path: polygon(0% 100%, 100% 100%, 100% 35%, 50% 0%, 0% 35%);
+        opacity: 0;
+        transition:
+          transform 1900ms cubic-bezier(0.3, 0.5, 0.4, 1),
+          opacity 1900ms ease-out,
+          clip-path 1900ms ease-out;
+      }
     </style>
   </head>
 
@@ -168,6 +222,11 @@
       id="screen-experience"
       class="hidden min-h-screen flex-col items-center px-6 py-16 opacity-0 transition-opacity duration-[2200ms] ease-organic sm:py-24"
     >
+      <!-- Persistent brand mark. -->
+      <div class="fixed left-5 top-5 z-20 text-xs uppercase tracking-[0.32em] text-clay">
+        While They&rsquo;re Here
+      </div>
+
       <!-- Fixed ambient sound control, available throughout. -->
       <div class="fixed right-5 top-5 z-20 flex items-center gap-2.5 rounded-full border border-mist bg-cream/80 px-4 py-2 backdrop-blur-sm">
         <button
@@ -208,31 +267,38 @@
             <figcaption class="text-xs italic text-charcoal/60">Two mugs, still warm, on a sunlit table.</figcaption>
           </figure>
 
-          <!-- Scene 2: A view from a train window -->
+          <!-- Scene 2: A necklace catching the light -->
           <figure class="scene absolute inset-0 flex flex-col items-center justify-center gap-6" data-scene="2">
-            <div class="drift relative h-32 w-44 overflow-hidden rounded-sm border-4 border-walnut/60 bg-gradient-to-b from-sage/30 via-clay/20 to-mist/40">
-              <span class="absolute inset-x-0 top-1/2 h-px bg-walnut/30"></span>
-              <span class="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-walnut/30"></span>
+            <div class="drift relative flex h-28 w-28 items-center justify-center">
+              <span class="absolute inset-0 rounded-full border-4 border-clay/40"></span>
+              <span class="glow absolute bottom-1 h-6 w-6 rotate-45 rounded-sm border-2 border-clay/70 bg-cream/40"></span>
             </div>
-            <figcaption class="text-xs italic text-charcoal/60">The view from a train window, half-remembered.</figcaption>
+            <figcaption class="text-xs italic text-charcoal/60">A necklace that still catches the light just so.</figcaption>
           </figure>
 
-          <!-- Scene 3: A park bench -->
+          <!-- Scene 3: An old book with a dried flower bookmark -->
           <figure class="scene absolute inset-0 flex flex-col items-center justify-center gap-6" data-scene="3">
-            <div class="drift relative flex h-24 w-48 items-end justify-center">
-              <span class="absolute left-1/2 top-0 h-16 w-px -translate-x-10 -rotate-12 bg-sage/60"></span>
-              <span class="absolute left-1/2 top-0 h-20 w-px translate-x-6 rotate-[10deg] bg-sage/50"></span>
-              <span class="absolute left-1/2 top-2 h-14 w-px -translate-x-2 rotate-6 bg-sage/40"></span>
-              <div class="relative h-8 w-40 rounded-sm border-4 border-walnut/60 bg-clay/20">
-                <span class="absolute -bottom-4 left-3 h-4 w-1.5 bg-walnut/60"></span>
-                <span class="absolute -bottom-4 right-3 h-4 w-1.5 bg-walnut/60"></span>
-              </div>
+            <div class="drift relative flex h-20 w-36 items-center justify-center rounded-sm border-4 border-walnut/60 bg-clay/10">
+              <span class="absolute inset-x-3 top-1/2 h-px -translate-y-1/2 bg-walnut/30"></span>
+              <span class="absolute left-1/2 top-1/2 h-full w-px -translate-x-1/2 -translate-y-1/2 bg-walnut/30"></span>
+              <span class="glow absolute -top-3 right-7 h-6 w-6 rounded-full bg-sage/50"></span>
+              <span class="absolute -top-0.5 right-9 h-5 w-1 rotate-45 rounded-full bg-sage/60"></span>
             </div>
-            <figcaption class="text-xs italic text-charcoal/60">A park bench you used to sit on, just to talk.</figcaption>
+            <figcaption class="text-xs italic text-charcoal/60">An old, worn book with a dried flower kept between the pages.</figcaption>
           </figure>
 
-          <!-- Scene 4: Holding hands -->
+          <!-- Scene 4: A vintage perfume bottle on a wooden vanity -->
           <figure class="scene absolute inset-0 flex flex-col items-center justify-center gap-6" data-scene="4">
+            <div class="drift relative flex h-28 flex-col items-center justify-end">
+              <span class="h-3 w-7 rounded-sm bg-walnut/60"></span>
+              <span class="glow h-16 w-14 rounded-t-2xl rounded-b-sm border-4 border-clay/50 bg-mist/30"></span>
+              <span class="mt-2 h-1 w-24 rounded-full bg-walnut/30"></span>
+            </div>
+            <figcaption class="text-xs italic text-charcoal/60">A vintage perfume bottle, still on the wooden vanity.</figcaption>
+          </figure>
+
+          <!-- Scene 5: Holding hands -->
+          <figure class="scene absolute inset-0 flex flex-col items-center justify-center gap-6" data-scene="5">
             <div class="drift flex items-center justify-center">
               <span class="h-20 w-16 -rotate-6 rounded-[40%] bg-clay/40"></span>
               <span class="-ml-6 h-20 w-16 rotate-6 rounded-[40%] bg-sage/40"></span>
@@ -240,14 +306,13 @@
             <figcaption class="text-xs italic text-charcoal/60">A hand held a little longer than it needed to be.</figcaption>
           </figure>
 
-          <!-- Scene 5: A streetlamp -->
-          <figure class="scene absolute inset-0 flex flex-col items-center justify-center gap-6" data-scene="5">
-            <div class="drift relative flex h-32 flex-col items-center">
-              <span class="glow h-6 w-6 rounded-full bg-clay/70"></span>
-              <span class="h-24 w-1 bg-walnut/50"></span>
-              <span class="h-1 w-10 bg-walnut/50"></span>
+          <!-- Scene 6: A view from a train window -->
+          <figure class="scene absolute inset-0 flex flex-col items-center justify-center gap-6" data-scene="6">
+            <div class="drift relative h-32 w-44 overflow-hidden rounded-sm border-4 border-walnut/60 bg-gradient-to-b from-sage/30 via-clay/20 to-mist/40">
+              <span class="absolute inset-x-0 top-1/2 h-px bg-walnut/30"></span>
+              <span class="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-walnut/30"></span>
             </div>
-            <figcaption class="text-xs italic text-charcoal/60">The streetlamp on the corner you always passed.</figcaption>
+            <figcaption class="text-xs italic text-charcoal/60">The view from a train window, half-remembered.</figcaption>
           </figure>
         </div>
       </div>
@@ -263,12 +328,14 @@
 
         <div id="sanctuary-form">
           <label for="sanctuary-text" class="sr-only">Your words to them</label>
-          <textarea
-            id="sanctuary-text"
-            rows="10"
-            placeholder="Dear…"
-            class="w-full resize-y rounded-sm border border-mist bg-cream/60 p-6 font-sans text-base leading-relaxed text-charcoal placeholder:text-charcoal/40 transition-all duration-[1200ms] ease-organic focus-visible:outline focus-visible:outline-2 focus-visible:outline-walnut focus-visible:outline-offset-4"
-          ></textarea>
+          <div class="paper-wrap">
+            <textarea
+              id="sanctuary-text"
+              rows="10"
+              placeholder="Dear…"
+              class="paper w-full resize-y rounded-sm border border-mist bg-cream/60 p-6 font-sans text-base leading-relaxed text-charcoal placeholder:text-charcoal/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-walnut focus-visible:outline-offset-4"
+            ></textarea>
+          </div>
 
           <div class="mt-6 flex flex-col items-center gap-4">
             <button
@@ -276,15 +343,16 @@
               id="release-btn"
               class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-walnut focus-visible:outline-offset-4 inline-flex items-center gap-3 rounded-sm border border-walnut bg-walnut px-8 py-4 font-sans text-sm uppercase tracking-[0.1em] text-cream transition-all duration-500 ease-organic hover:-translate-y-0.5 hover:bg-walnut/90"
             >
-              Let it go
+              Release
             </button>
             <p class="max-w-[40ch] text-center text-xs italic text-charcoal/50">
-              This won't save, send, or copy your words anywhere. When you let go, they simply fade.
+              This won't save, send, or copy your words anywhere. Fold it, send it, and watch it go.
             </p>
           </div>
+          <p id="release-status" class="sr-only" role="status" aria-live="polite"></p>
         </div>
 
-        <!-- Closing message, shown after "Let it go". -->
+        <!-- Closing message, shown after "Release". -->
         <div
           id="closing-message"
           class="hidden flex-col items-center px-2 text-center opacity-0 transition-opacity duration-[2500ms] ease-organic"
@@ -464,25 +532,61 @@
         const sanctuaryText = document.getElementById("sanctuary-text");
         const releaseBtn = document.getElementById("release-btn");
         const closingMessage = document.getElementById("closing-message");
+        const releaseStatus = document.getElementById("release-status");
 
-        releaseBtn.addEventListener("click", () => {
-          sanctuaryText.classList.add("opacity-0", "scale-[0.98]");
+        // ------------------------------------------------------------
+        // The Release: fold the note into a paper plane, step by step,
+        // then let it fly off-screen. The text is never read back —
+        // it's blanked the moment the fold begins, and nothing is
+        // stored or transmitted at any point.
+        // ------------------------------------------------------------
+        function runRelease() {
+          if (prefersReducedMotion) {
+            sanctuaryText.value = "";
+            sanctuaryForm.classList.add("hidden");
+            showClosing();
+            return;
+          }
 
-          window.setTimeout(
-            () => {
-              // Discard the text completely — nothing is stored or sent.
-              sanctuaryText.value = "";
-              sanctuaryForm.classList.add("hidden");
+          releaseBtn.disabled = true;
+          sanctuaryText.disabled = true;
+          releaseStatus.textContent = "Folding your words and letting them go.";
 
-              closingMessage.classList.remove("hidden");
-              closingMessage.classList.add("flex");
-              requestAnimationFrame(() => {
-                closingMessage.classList.remove("opacity-0");
-              });
-            },
-            prefersReducedMotion ? 0 : 1200,
-          );
-        });
+          // Stage 0: the words fade from view as the fold begins.
+          sanctuaryText.classList.add("fold-mute-text");
+          window.setTimeout(() => sanctuaryText.value = "", 350);
+
+          // Stage 1: fold in half.
+          window.setTimeout(() => sanctuaryText.classList.add("fold-1"), 250);
+
+          // Stage 2: fold again, into a small rectangle.
+          window.setTimeout(() => sanctuaryText.classList.add("fold-2"), 1450);
+
+          // Stage 3: the corners come in — it's a plane now.
+          window.setTimeout(() => sanctuaryText.classList.add("fold-3"), 2650);
+
+          // Stage 4: release — it lifts and carries away.
+          window.setTimeout(() => {
+            sanctuaryText.classList.add("fold-fly");
+            releaseStatus.textContent = "Released.";
+          }, 3850);
+
+          // Stage 5: clear the stage and show the closing message.
+          window.setTimeout(() => {
+            sanctuaryForm.classList.add("hidden");
+            showClosing();
+          }, 5850);
+        }
+
+        function showClosing() {
+          closingMessage.classList.remove("hidden");
+          closingMessage.classList.add("flex");
+          requestAnimationFrame(() => {
+            closingMessage.classList.remove("opacity-0");
+          });
+        }
+
+        releaseBtn.addEventListener("click", runRelease);
       })();
     </script>
   </body>
