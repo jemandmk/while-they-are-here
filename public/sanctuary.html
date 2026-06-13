@@ -183,6 +183,33 @@
       #screen-experience.nostalgia-tint {
         filter: sepia(0.35) saturate(0.85);
       }
+
+      /* ------------------------------------------------------------ */
+      /* The setup choice — "still here" vs "passed on" — and the      */
+      /* optional relationship selector.                               */
+      /* ------------------------------------------------------------ */
+      .choice-btn {
+        border: 1px solid #6b584c;
+        color: #6b584c;
+        background-color: transparent;
+        transition:
+          background-color 500ms cubic-bezier(0.22, 0.61, 0.36, 1),
+          color 500ms cubic-bezier(0.22, 0.61, 0.36, 1);
+      }
+      .choice-btn[aria-checked="true"] {
+        background-color: #6b584c;
+        color: #f6f1e8;
+      }
+      .relation-select {
+        border: 1px solid #d8d4ce;
+        background-color: #f6f1e8;
+        color: #2d2d2d;
+      }
+      #begin-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        transform: none !important;
+      }
     </style>
   </head>
 
@@ -196,34 +223,70 @@
     >
       <p class="mb-6 text-xs uppercase tracking-[0.32em] text-clay">While They're Here</p>
       <h1 class="mb-6 max-w-[22ch] text-3xl leading-snug sm:text-4xl md:text-[2.6rem]">
-        Close your eyes.<br />Think of them.
+        Close your eyes.<br />Think of <span class="js-relation">them</span>.
       </h1>
-      <p class="mx-auto mb-12 max-w-[52ch] text-base font-light leading-relaxed text-charcoal/80">
-        Someone you carry with you, but haven't found the words for yet. Take a slow breath. When
-        you're ready, this space will play a quiet, ambient tone — designed to ease your mind into
-        remembering the warm, ordinary moments you've shared with them.
+      <p class="mx-auto mb-2 max-w-[52ch] text-base font-light leading-relaxed text-charcoal/80">
+        Someone you carry with you. Take a slow breath. When you're ready, this space will play a
+        quiet, ambient tone — designed to ease your mind into remembering the warm, ordinary
+        moments
+        <span data-copy="here">you've shared with <span class="js-relation">them</span></span>
+        <span data-copy="passed" class="hidden">you shared with <span class="js-relation">them</span></span>.
+      </p>
+      <p class="mx-auto mb-10 max-w-[52ch] text-base font-light leading-relaxed text-charcoal/80">
+        <span data-copy="here">Someone you haven't found the words for yet — but who's still here to hear them.</span>
+        <span data-copy="passed" class="hidden">Someone who's no longer here — but the words you carry for them still matter.</span>
       </p>
 
-      <div class="mb-10 flex items-center gap-3">
-        <button
-          type="button"
-          id="sound-toggle"
-          role="switch"
-          aria-checked="false"
-          aria-label="Play ambient sound"
-          class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-walnut focus-visible:outline-offset-4 relative inline-flex h-6 w-12 flex-none items-center rounded-full bg-mist transition-colors duration-500 ease-organic"
-        >
-          <span
-            id="sound-toggle-knob"
-            class="inline-block h-[18px] w-[18px] translate-x-[3px] transform rounded-full bg-cream shadow-sm transition-transform duration-500 ease-organic"
-          ></span>
-        </button>
-        <span class="text-xs uppercase tracking-[0.16em] text-charcoal/70">Ambient tone</span>
+      <!-- Setup: are they still here, or have they passed? -->
+      <div class="mb-8 w-full max-w-[28rem]">
+        <p class="mb-3 text-xs uppercase tracking-[0.2em] text-charcoal/60">Before you begin</p>
+        <div role="radiogroup" aria-label="Are they still here, or have they passed?" class="flex flex-col gap-3 sm:flex-row sm:justify-center">
+          <button
+            type="button"
+            id="state-here"
+            role="radio"
+            aria-checked="false"
+            class="choice-btn focus-visible:outline focus-visible:outline-2 focus-visible:outline-walnut focus-visible:outline-offset-4 flex-1 rounded-sm px-5 py-3 font-sans text-sm transition-all duration-500 ease-organic"
+          >
+            They're still here
+          </button>
+          <button
+            type="button"
+            id="state-passed"
+            role="radio"
+            aria-checked="false"
+            class="choice-btn focus-visible:outline focus-visible:outline-2 focus-visible:outline-walnut focus-visible:outline-offset-4 flex-1 rounded-sm px-5 py-3 font-sans text-sm transition-all duration-500 ease-organic"
+          >
+            They've passed on
+          </button>
+        </div>
+
+        <div class="mt-5">
+          <label for="relation-select" class="mb-2 block text-xs uppercase tracking-[0.2em] text-charcoal/60">
+            Who are they to you? <span class="text-charcoal/40">(optional)</span>
+          </label>
+          <select
+            id="relation-select"
+            class="relation-select focus-visible:outline focus-visible:outline-2 focus-visible:outline-walnut focus-visible:outline-offset-4 w-full rounded-sm px-4 py-3 font-sans text-sm"
+          >
+            <option value="">Prefer not to say</option>
+            <option value="your parent">A parent</option>
+            <option value="your partner">A partner</option>
+            <option value="your sibling">A sibling</option>
+            <option value="your child">A child</option>
+            <option value="your friend">A friend</option>
+            <option value="your grandparent">A grandparent</option>
+            <option value="your pet">A pet</option>
+            <option value="someone dear to you">Someone dear to you</option>
+          </select>
+        </div>
       </div>
 
       <button
         type="button"
         id="begin-btn"
+        disabled
+        aria-disabled="true"
         class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-walnut focus-visible:outline-offset-4 inline-flex items-center gap-3 rounded-sm border border-walnut bg-walnut px-8 py-4 font-sans text-sm uppercase tracking-[0.1em] text-cream transition-all duration-500 ease-organic hover:-translate-y-0.5 hover:bg-walnut/90"
       >
         Begin
@@ -381,13 +444,29 @@
           class="hidden flex-col items-center px-2 text-center opacity-0 transition-opacity duration-[2500ms] ease-organic"
         >
           <p class="mb-6 text-xs uppercase tracking-[0.3em] text-clay">It's released.</p>
-          <p class="mx-auto mb-6 max-w-[48ch] text-xl font-light leading-relaxed sm:text-2xl">
-            What you just wrote was never the hard part. You already know how to say it.
-          </p>
-          <p class="mx-auto mb-12 max-w-[50ch] text-base font-light leading-relaxed text-charcoal/80">
-            The only thing left is to say it to them — out loud, imperfectly, while they're still here
-            to hear it. Not today, necessarily. But soon. You have the words. Go find a moment for them.
-          </p>
+
+          <div data-copy="here">
+            <p class="mx-auto mb-6 max-w-[48ch] text-xl font-light leading-relaxed sm:text-2xl">
+              What you just wrote was never the hard part. You already know how to say it.
+            </p>
+            <p class="mx-auto mb-12 max-w-[50ch] text-base font-light leading-relaxed text-charcoal/80">
+              The only thing left is to say it to <span class="js-relation">them</span> — out loud,
+              imperfectly, while they're still here to hear it. Not today, necessarily. But soon.
+              You have the words. Go find a moment for <span class="js-relation">them</span>.
+            </p>
+          </div>
+
+          <div data-copy="passed" class="hidden">
+            <p class="mx-auto mb-6 max-w-[48ch] text-xl font-light leading-relaxed sm:text-2xl">
+              What you just wrote doesn't need to be unsaid to be real.
+            </p>
+            <p class="mx-auto mb-12 max-w-[50ch] text-base font-light leading-relaxed text-charcoal/80">
+              These words were for <span class="js-relation">them</span>, and that doesn't end just
+              because they're gone. Grief is love that's run out of places to go — for a moment, you
+              gave it somewhere to go. Let yourself carry this stillness with you, in your own time,
+              in your own way.
+            </p>
+          </div>
           <a
             href="./"
             class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-walnut focus-visible:outline-offset-4 inline-flex items-center gap-3 rounded-sm border border-walnut px-8 py-4 font-sans text-sm uppercase tracking-[0.1em] text-walnut transition-all duration-500 ease-organic hover:-translate-y-0.5 hover:bg-walnut/10"
@@ -503,6 +582,45 @@
         soundToggle2.addEventListener("click", toggleSound);
 
         // ------------------------------------------------------------
+        // Setup: are they still here, or have they passed? Plus an
+        // optional relationship phrase. Held only in memory for the
+        // life of this page — never stored, sent, or logged.
+        // ------------------------------------------------------------
+        const stateHereBtn = document.getElementById("state-here");
+        const statePassedBtn = document.getElementById("state-passed");
+        const relationSelect = document.getElementById("relation-select");
+        let personState = null;
+
+        function setPersonState(state) {
+          personState = state;
+          const hereOn = state === "here";
+          const passedOn = state === "passed";
+          stateHereBtn.setAttribute("aria-checked", hereOn ? "true" : "false");
+          statePassedBtn.setAttribute("aria-checked", passedOn ? "true" : "false");
+          beginBtn.disabled = false;
+          beginBtn.removeAttribute("aria-disabled");
+        }
+
+        stateHereBtn.addEventListener("click", () => setPersonState("here"));
+        statePassedBtn.addEventListener("click", () => setPersonState("passed"));
+
+        // Apply the chosen framing across the experience before it's shown.
+        function applyPersonalization() {
+          const relation = relationSelect.value || "them";
+          document.querySelectorAll(".js-relation").forEach((el) => {
+            el.textContent = relation;
+          });
+
+          const resolvedState = personState || "here";
+          document.querySelectorAll('[data-copy="here"]').forEach((el) => {
+            el.classList.toggle("hidden", resolvedState !== "here");
+          });
+          document.querySelectorAll('[data-copy="passed"]').forEach((el) => {
+            el.classList.toggle("hidden", resolvedState !== "passed");
+          });
+        }
+
+        // ------------------------------------------------------------
         // Step transition: intro -> vision canvas + sanctuary
         // ------------------------------------------------------------
         const introScreen = document.getElementById("screen-intro");
@@ -510,6 +628,8 @@
         const beginBtn = document.getElementById("begin-btn");
 
         beginBtn.addEventListener("click", () => {
+          if (beginBtn.disabled) return;
+          applyPersonalization();
           introScreen.classList.add("opacity-0");
           window.setTimeout(
             () => {
