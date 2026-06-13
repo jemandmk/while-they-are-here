@@ -145,23 +145,43 @@
           inset -10px 0 18px -10px rgba(45, 45, 45, 0.35),
           inset 0 -10px 18px -10px rgba(45, 45, 45, 0.35);
       }
+      /* Fold 3: the silhouette resolves into a paper plane — a dart
+         shape with a folded-wing notch — and banks toward its flight
+         path before it ever starts moving. */
       .paper.fold-3 {
-        transform: scaleX(0.5) scaleY(0.55) rotate(0.0001deg);
+        transform: scaleX(0.5) scaleY(0.55) rotate(-18deg);
         transform-origin: bottom right;
-        clip-path: polygon(0% 100%, 100% 100%, 100% 35%, 50% 0%, 0% 35%);
+        clip-path: polygon(0% 0%, 100% 50%, 0% 100%, 32% 50%);
         border-radius: 0;
         box-shadow:
           inset -10px 0 18px -10px rgba(45, 45, 45, 0.35),
-          inset 0 -10px 18px -10px rgba(45, 45, 45, 0.35);
+          inset 0 -10px 18px -10px rgba(45, 45, 45, 0.35),
+          inset 0 0 0 1px rgba(45, 45, 45, 0.15);
       }
       .paper.fold-fly {
-        transform: translate3d(38vw, -46vh, 0) scale(0.32) rotate(28deg);
-        clip-path: polygon(0% 100%, 100% 100%, 100% 35%, 50% 0%, 0% 35%);
+        transform: translate3d(38vw, -46vh, 0) scale(0.32) rotate(6deg);
+        clip-path: polygon(0% 0%, 100% 50%, 0% 100%, 32% 50%);
         opacity: 0;
         transition:
           transform 1900ms cubic-bezier(0.3, 0.5, 0.4, 1),
           opacity 1900ms ease-out,
           clip-path 1900ms ease-out;
+      }
+
+      /* Nostalgic light wash — a warm, sepia-toned glow that passes over
+         the scene as the note becomes a plane and lifts away. */
+      #nostalgia-glow {
+        background: radial-gradient(
+          circle at 70% 22%,
+          rgba(196, 154, 132, 0.4),
+          rgba(246, 241, 232, 0) 60%
+        );
+      }
+      #screen-experience {
+        transition: filter 1800ms ease-organic;
+      }
+      #screen-experience.nostalgia-tint {
+        filter: sepia(0.35) saturate(0.85);
       }
     </style>
   </head>
@@ -226,6 +246,9 @@
       <div class="fixed left-5 top-5 z-20 text-xs uppercase tracking-[0.32em] text-clay">
         While They&rsquo;re Here
       </div>
+
+      <!-- Nostalgic light wash, triggered during the Release. -->
+      <div id="nostalgia-glow" class="pointer-events-none fixed inset-0 z-30 opacity-0 transition-opacity duration-[1800ms] ease-organic" aria-hidden="true"></div>
 
       <!-- Fixed ambient sound control, available throughout. -->
       <div class="fixed right-5 top-5 z-20 flex items-center gap-2.5 rounded-full border border-mist bg-cream/80 px-4 py-2 backdrop-blur-sm">
@@ -533,6 +556,90 @@
         const releaseBtn = document.getElementById("release-btn");
         const closingMessage = document.getElementById("closing-message");
         const releaseStatus = document.getElementById("release-status");
+        const nostalgiaGlow = document.getElementById("nostalgia-glow");
+
+        // ------------------------------------------------------------
+        // Paper sounds — synthesised, no audio files. A short filtered
+        // noise burst reads as a crease for each fold; a longer panned
+        // sweep reads as the plane catching the air as it lifts away.
+        // ------------------------------------------------------------
+        let fxAudioCtx = null;
+        let fxNoiseBuffer = null;
+
+        function getFxContext() {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContextClass) return null;
+          if (!fxAudioCtx) {
+            fxAudioCtx = new AudioContextClass();
+          }
+          if (fxAudioCtx.state === "suspended") {
+            fxAudioCtx.resume();
+          }
+          return fxAudioCtx;
+        }
+
+        function getFxNoiseBuffer(ctx) {
+          if (fxNoiseBuffer) return fxNoiseBuffer;
+          const data = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+          const channel = data.getChannelData(0);
+          for (let i = 0; i < channel.length; i += 1) {
+            channel[i] = Math.random() * 2 - 1;
+          }
+          fxNoiseBuffer = data;
+          return fxNoiseBuffer;
+        }
+
+        function playCrease() {
+          const ctx = getFxContext();
+          if (!ctx) return;
+
+          const source = ctx.createBufferSource();
+          source.buffer = getFxNoiseBuffer(ctx);
+          source.loop = true;
+
+          const filter = ctx.createBiquadFilter();
+          filter.type = "bandpass";
+          filter.Q.value = 0.8;
+          filter.frequency.setValueAtTime(2400, ctx.currentTime);
+          filter.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.22);
+
+          const gain = ctx.createGain();
+          gain.gain.setValueAtTime(0, ctx.currentTime);
+          gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.28);
+
+          source.connect(filter).connect(gain).connect(ctx.destination);
+          source.start();
+          source.stop(ctx.currentTime + 0.3);
+        }
+
+        function playFlight() {
+          const ctx = getFxContext();
+          if (!ctx) return;
+
+          const source = ctx.createBufferSource();
+          source.buffer = getFxNoiseBuffer(ctx);
+          source.loop = true;
+
+          const filter = ctx.createBiquadFilter();
+          filter.type = "bandpass";
+          filter.Q.value = 0.6;
+          filter.frequency.setValueAtTime(500, ctx.currentTime);
+          filter.frequency.exponentialRampToValueAtTime(3200, ctx.currentTime + 1.6);
+
+          const panner = ctx.createStereoPanner();
+          panner.pan.setValueAtTime(-0.6, ctx.currentTime);
+          panner.pan.linearRampToValueAtTime(0.8, ctx.currentTime + 1.8);
+
+          const gain = ctx.createGain();
+          gain.gain.setValueAtTime(0, ctx.currentTime);
+          gain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 0.2);
+          gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.8);
+
+          source.connect(filter).connect(panner).connect(gain).connect(ctx.destination);
+          source.start();
+          source.stop(ctx.currentTime + 1.9);
+        }
 
         // ------------------------------------------------------------
         // The Release: fold the note into a paper plane, step by step,
@@ -557,21 +664,42 @@
           window.setTimeout(() => sanctuaryText.value = "", 350);
 
           // Stage 1: fold in half.
-          window.setTimeout(() => sanctuaryText.classList.add("fold-1"), 250);
+          window.setTimeout(() => {
+            sanctuaryText.classList.add("fold-1");
+            playCrease();
+          }, 250);
 
           // Stage 2: fold again, into a small rectangle.
-          window.setTimeout(() => sanctuaryText.classList.add("fold-2"), 1450);
+          window.setTimeout(() => {
+            sanctuaryText.classList.add("fold-2");
+            playCrease();
+          }, 1450);
 
-          // Stage 3: the corners come in — it's a plane now.
-          window.setTimeout(() => sanctuaryText.classList.add("fold-3"), 2650);
+          // Stage 3: the corners come in — it's a paper plane now. The
+          // warm, nostalgic light wash begins here, as the shape resolves.
+          window.setTimeout(() => {
+            sanctuaryText.classList.add("fold-3");
+            playCrease();
+            nostalgiaGlow.classList.remove("opacity-0");
+            nostalgiaGlow.classList.add("opacity-100");
+            experienceScreen.classList.add("nostalgia-tint");
+          }, 2650);
 
-          // Stage 4: release — it lifts and carries away.
+          // Stage 4: release — it catches the air and carries away.
           window.setTimeout(() => {
             sanctuaryText.classList.add("fold-fly");
+            playFlight();
             releaseStatus.textContent = "Released.";
           }, 3850);
 
-          // Stage 5: clear the stage and show the closing message.
+          // Stage 5: the light wash recedes with it.
+          window.setTimeout(() => {
+            nostalgiaGlow.classList.add("opacity-0");
+            nostalgiaGlow.classList.remove("opacity-100");
+            experienceScreen.classList.remove("nostalgia-tint");
+          }, 4600);
+
+          // Stage 6: clear the stage and show the closing message.
           window.setTimeout(() => {
             sanctuaryForm.classList.add("hidden");
             showClosing();
