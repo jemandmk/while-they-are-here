@@ -33,6 +33,19 @@ export interface ReflectionPrompt {
   readonly text: string;
 }
 
+/**
+ * A high-friction "Seek Discomfort" assignment. Extends ReflectionPrompt so it
+ * stays compatible with `usePromptRoulette`, and adds the explicit line of
+ * internal resistance the user is being asked to lean into.
+ */
+export interface DiscomfortPrompt extends ReflectionPrompt {
+  /** The honest, named resistance — what makes this one hard to start. */
+  readonly friction: string;
+}
+
+/** Which prompt pool the roulette is currently drawing from. */
+export type RouletteMode = "standard" | "discomfort";
+
 /** One row of the Reusable Production Execution Checklist (SOP §5). */
 export interface ChecklistItem {
   readonly id: string;

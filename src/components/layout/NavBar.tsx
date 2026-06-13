@@ -5,6 +5,7 @@ const LINKS: ReadonlyArray<{ readonly href: string; readonly label: string }> = 
   { href: "#soundscape", label: "The Soundscape" },
   { href: "#weekly", label: "The Weekly Loop" },
   { href: "#archive", label: "The Archive" },
+  { href: "#reminder", label: "The Reminder" },
 ];
 
 /** Sticky, translucent navigation with a hairline that appears on scroll. */

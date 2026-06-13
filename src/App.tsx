@@ -5,6 +5,7 @@ import { Pillars } from "./components/sections/Pillars";
 import { SoundscapeSection } from "./components/sections/SoundscapeSection";
 import { WeeklyLoop } from "./components/sections/WeeklyLoop";
 import { ArchiveSection } from "./components/sections/ArchiveSection";
+import { DailyReminderForm } from "./components/DailyReminderForm";
 
 /**
  * Root composition. Each section is an isolated, self-contained module so the
@@ -21,6 +22,8 @@ export function App(): JSX.Element {
         <SoundscapeSection />
         <WeeklyLoop />
         <ArchiveSection />
+        <hr className="border-0 border-t border-hairline" />
+        <DailyReminderForm />
       </main>
       <Footer />
     </>
