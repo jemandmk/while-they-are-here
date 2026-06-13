@@ -50,20 +50,5 @@ export interface WeeklyBeat {
   readonly directive: string;
 }
 
-/** A preview "Human Check-In" push notification. */
-export interface Nudge {
-  readonly title: string;
-  readonly body: string;
-}
-
-/** Contact method for the Daily Reminder subscription. */
-export type ContactMethod = "email" | "phone";
-
-/** Finite states for the subscription form (no boolean soup). */
-export type SubscriptionStatus =
-  | { readonly kind: "idle" }
-  | { readonly kind: "invalid"; readonly message: string }
-  | { readonly kind: "subscribed"; readonly contact: string };
-
 /** Playback state for the sensory audio engine. */
 export type AudioStatus = "idle" | "playing";

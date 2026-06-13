@@ -5,7 +5,6 @@ import { Pillars } from "./components/sections/Pillars";
 import { SoundscapeSection } from "./components/sections/SoundscapeSection";
 import { WeeklyLoop } from "./components/sections/WeeklyLoop";
 import { ArchiveSection } from "./components/sections/ArchiveSection";
-import { CheckInSection } from "./components/sections/CheckInSection";
 
 /**
  * Root composition. Each section is an isolated, self-contained module so the
@@ -22,7 +21,6 @@ export function App(): JSX.Element {
         <SoundscapeSection />
         <WeeklyLoop />
         <ArchiveSection />
-        <CheckInSection />
       </main>
       <Footer />
     </>

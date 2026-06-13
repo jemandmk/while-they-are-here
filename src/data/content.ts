@@ -1,6 +1,5 @@
 import type {
   ChecklistItem,
-  Nudge,
   Pillar,
   ReflectionPrompt,
   SensoryAnchor,
@@ -112,13 +111,4 @@ export const CHECKLIST: ReadonlyArray<ChecklistItem> = [
   { id: "sensory", label: "Sensory Check", description: "Does it highlight a real sensory anchor — sound, smell, touch, a habit — not a general concept?" },
   { id: "overload", label: "Production Overload", description: "Is the editing stripped back enough to feel like found footage, not an ad?" },
   { id: "actionability", label: "Actionability Metric", description: "Could an average person execute this in 5 minutes this weekend?" },
-];
-
-/** Preview push notifications for the Daily Human Check-In. */
-export const NUDGES: ReadonlyArray<Nudge> = [
-  { title: "Don't wait for a funeral.", body: "Hit record on a 60-second voice memo right now while they're making coffee. Let it capture the ambient background chaos." },
-  { title: "Film the hands, not the face.", body: "Catch your mother's hands doing the thing they always do. The movement outlasts the photo." },
-  { title: "Lay the phone face-down.", body: "At dinner tonight, place your phone in the center of the table and just let it listen. Don't direct anyone." },
-  { title: "The door, the footsteps, the sigh.", body: "Record one mundane sound of home today. In ten years it will be the most expensive thing you own." },
-  { title: "Ask about a smell.", body: "Ask someone you love about a scent from their childhood. Record them remembering — not their answer." },
 ];
